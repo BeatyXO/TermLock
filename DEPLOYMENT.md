@@ -48,10 +48,11 @@ Explorer: `https://explorer-studio.genlayer.com`
 
 - `python scripts/preflight.py`: PASS
 - `python -m compileall contracts scripts tests`: PASS
-- `genvm-lint check contracts/termlock.py`: lint rules PASS; SDK validation is environment-dependent locally
-- `genvm-lint check contracts/commitment_gate.py`: lint rules PASS; SDK validation is environment-dependent locally
+- `genvm-lint check contracts/termlock.py`: PASS in clean GitHub Actions
+- `genvm-lint check contracts/commitment_gate.py`: PASS in clean GitHub Actions
 - Direct Mode pytest: `40 passed, 1 skipped`
 - live stable Studionet lifecycle: PASS for TermLock session 1 and corrected CommitmentGate deployment
-- GitHub Actions: workflow fix pushed in commit `6e9d6554fe1017338d8326f89364bd7dd857c4d4`; clean-run verification pending final runner completion
+- GitHub Actions: **GREEN** — run `36280036759` for commit `b02918fcc7c0f98ca6cb938c445ce6b1bc71e02a`
+- final preflight conditions: PASS — no deployment placeholders or unverified-proof markers remain
 
 All values above are actual observed evidence from stable Studionet; no fixture or deployment placeholder remains.
