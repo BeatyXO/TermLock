@@ -1,0 +1,1 @@
+Security review of the Alpha protocol for 4,000 USDC. Deliver the final written report no later than 10 June 2027. The engagement includes one remediation review of fixes submitted within seven days after the report.
