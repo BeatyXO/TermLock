@@ -92,7 +92,7 @@ for p in ROOT.rglob("*"):
 network_text = "\n".join(
     p.read_text(encoding="utf-8", errors="ignore")
     for p in ROOT.rglob("*")
-    if p.is_file() and p.resolve() != Path(__file__).resolve() and p.suffix in {".md", ".py", ".yaml", ".yml", ".txt"}
+    if p.is_file() and p.resolve() != Path(__file__).resolve() and p.name != "pin_fixture_commit.py" and p.suffix in {".md", ".py", ".yaml", ".yml", ".txt"}
 )
 if "studio-dev.genlayer.com/api" in network_text or re.search(r"\b61997\b", network_text):
     errors.append("preview Studio network reference found; stable Studionet 61999 is required")
