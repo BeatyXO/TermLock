@@ -8,11 +8,11 @@ This repository does not invent deployment evidence. Fields remain `PENDING` unt
 
 ## Canonical deployment
 
-- TermLock address: `PENDING`
-- TermLock deploy tx: `PENDING`
-- CommitmentGate address: `PENDING`
-- CommitmentGate deploy tx: `PENDING`
-- canonical source commit: `PENDING`
+- TermLock address: `0x4c6b965F144dC718D79226C52Fe337990830dfa8`
+- TermLock deploy tx: `0xde74def1311b42669c38438d6bd059812496c1b7a5dff0c7dba397dd8ffdfdd5`
+- CommitmentGate address: `0xC2Cc4417e15009c787E9DA50295a124FB2Ed1B0F`
+- CommitmentGate deploy tx: `0x679b0af4a6f88dd2c699079c3a1015b54b6ae9017aaa42c7200e261fc3bbfa2c`
+- canonical source commit: `ff2589aa139f7f2bba0fd7d981033e59242233c3`
 
 ## Session / lifecycle proof
 
