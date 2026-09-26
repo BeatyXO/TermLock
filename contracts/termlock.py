@@ -454,13 +454,19 @@ class TermLock(gl.Contract):
         if len(title_c) > MAX_TITLE:
             raise gl.vm.UserError("title length out of range")
 
-        raw_schema = cli_unwrap(dimensions_json)
-        if len(raw_schema) == 0 or len(raw_schema) > MAX_SCHEMA_JSON:
-            raise gl.vm.UserError("dimensions_json length out of range")
-        try:
-            raw = json.loads(raw_schema)
-        except Exception:
-            raise gl.vm.UserError("dimensions_json must be valid JSON")
+        # Stable CLI versions may decode an array argument before it reaches
+        # the contract. Accept that structured form directly; callers using
+        # the documented string ABI still go through strict JSON parsing.
+        if isinstance(dimensions_json, list):
+            raw = dimensions_json
+        else:
+            raw_schema = cli_unwrap(dimensions_json)
+            if len(raw_schema) == 0 or len(raw_schema) > MAX_SCHEMA_JSON:
+                raise gl.vm.UserError("dimensions_json length out of range")
+            try:
+                raw = json.loads(raw_schema)
+            except Exception:
+                raise gl.vm.UserError("dimensions_json must be valid JSON")
         if not isinstance(raw, list) or len(raw) == 0 or len(raw) > MAX_DIMENSIONS:
             raise gl.vm.UserError("dimension count out of range")
 
