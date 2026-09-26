@@ -8,11 +8,11 @@ This repository does not invent deployment evidence. Fields remain `PENDING` unt
 
 ## Canonical deployment
 
-- TermLock address: `0x276F2942D5eCd7Ac25eB27A9b63afE1e6E00cD12`
-- TermLock deploy tx: `0x9da2bc0117cf0d4b71d0dd2c28e178c107ca37f59683e662aba039f0b925101c`
-- CommitmentGate address: `0x80f16a847d57AF09EDD359880fD0A3E7bef35bdf`
-- CommitmentGate deploy tx: `0x997d6fcef38351dfb0e88044f2867736e2a7da1676ec8859bfa3f773ba4f6981`
-- canonical source commit: `f9bab110212d451ddec30c38c3a8ab056ec50b4b`
+- TermLock address: `0xa1132EabEADcC6c517ABE498b51Cec8eBFFD8E3b`
+- TermLock deploy tx: `0xdc74a6beb8f1d7523822a30aced7516f1391fa6acc310f9ad47b071b4ce82a63`
+- CommitmentGate address: `0x000A997D9850daDBE3A54e6ECCE5b3432bf689B1`
+- CommitmentGate deploy tx: `0x57c04b4397233b56e8a01d9526c5cd2aaca3dc6f04e26cbad60b23bbe12e56ba`
+- canonical source commit: `6a561af6b9f6cf2c7b5f2f6403f1f9175ed00af1`
 
 ## Session / lifecycle proof
 
@@ -53,6 +53,6 @@ This repository does not invent deployment evidence. Fields remain `PENDING` unt
 
 Replace `PENDING` only with evidence actually produced. Do not copy sample addresses, hashes, or test counts into this file.
 
-## Codex finishing attempt (2026-09-26)
+## Superseded deployments
 
-No deployment was attempted. The GenLayer CLI reported the required stable network configuration (`studionet`, chain ID `61999`, RPC `https://studio.genlayer.com/api`), but read-only balance queries for the available test accounts failed with RPC transport error `fetch failed`. The environment therefore could not establish account funding or submit live transactions. GitHub authentication was invalid and the workspace sandbox denied local Git metadata writes, so the source could not be pushed and fixture references could not yet be pinned. All deployment evidence above remains pending.
+Earlier deployments are retained in Git history only. The canonical addresses above correspond to the final pushed source state.
