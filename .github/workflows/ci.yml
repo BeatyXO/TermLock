@@ -18,4 +18,13 @@ jobs:
       - run: python -m compileall contracts scripts tests
       - run: genvm-lint check contracts/termlock.py
       - run: genvm-lint check contracts/commitment_gate.py
+      # genlayer-test 0.28.0 otherwise follows GitHub's latest release,
+      # currently v0.3.0-rc7 whose public artifact is gone. Seed the
+      # Direct Mode cache with the stable v0.2.16 bundle used by this suite.
+      - name: Seed deterministic GenVM Direct Mode bundle
+        run: |
+          mkdir -p ~/.cache/gltest-direct
+          curl --fail --location --retry 3 \
+            https://github.com/genlayerlabs/genvm/releases/download/v0.2.16/genvm-universal.tar.xz \
+            --output ~/.cache/gltest-direct/genvm-universal-v0.2.16.tar.xz
       - run: pytest -q
