@@ -7,7 +7,7 @@ proof. The finishing agent must replace/extend this with the exact working clien
 calls it actually uses and then record finalized evidence in DEPLOYMENT.md.
 
 Immutable fixture base:
-https://raw.githubusercontent.com/BeatyXO/TermLock/FIXTURE_COMMIT_PLACEHOLDER/fixtures/
+https://raw.githubusercontent.com/BeatyXO/TermLock/a20c595ee59351a5dcd3e1a374f06b79c4899b03/fixtures/
 
 Required live lifecycle on stable Studionet / chain 61999:
 1. Verify network alias/RPC/chain ID before writes.
