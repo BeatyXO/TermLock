@@ -1,11 +1,11 @@
 # Verification checklist
 
-## Completed before live handoff
+## Protocol and repository
 
 - [x] standalone IC boundary retained; no frontend
 - [x] frozen schema rejects silent truncation
 - [x] model output is exact-schema / bounded-status only
-- [x] validator independently re-derives semantic statuses
+- [x] validators independently re-derive semantic statuses
 - [x] required dimensions fail closed
 - [x] real revisions invalidate assessment and approvals
 - [x] no-op revisions rejected
@@ -14,28 +14,46 @@
 - [x] canonical domain-separated hash design
 - [x] real typed consumer source present
 - [x] source/static tests included
+- [x] immutable fixture commit pin verified
+- [x] no frontend, secrets, private keys, environment files, or deployment placeholders remain
 
-## Finishing environment
+## Verification and CI
 
-- [ ] install repository tooling
-- [ ] `python scripts/preflight.py`
-- [ ] `python -m compileall contracts scripts tests`
-- [ ] `genvm-lint check contracts/termlock.py`
-- [ ] `genvm-lint check contracts/commitment_gate.py`
-- [ ] all Direct Mode tests pass without weakening assertions
-- [ ] effective network is `studionet`, chain 61999
-- [ ] immutable fixture commit pin verified
-- [ ] TermLock finalized deployment
-- [ ] two-party session created
-- [ ] conflicting required round cannot lock
-- [ ] revised round invalidates stale assessment
-- [ ] converged current round reaches consensus
-- [ ] both parties approve exact current assessment
-- [ ] converged approved round locks and emits nonzero 64-hex lock hash
-- [ ] CommitmentGate finalized deployment
-- [ ] valid pinned gate call succeeds
-- [ ] wrong-lock-hash gate call rejected
-- [ ] replayed action hash rejected
-- [ ] `DEPLOYMENT.md` contains only real proof
-- [ ] `python scripts/preflight.py --final`
-- [ ] git status clean and final remote inspected
+- [x] repository tooling installed and pinned
+- [x] `python scripts/preflight.py` passes
+- [x] `python -m compileall contracts scripts tests` passes
+- [x] `genvm-lint check contracts/termlock.py` passes in clean GitHub Actions
+- [x] `genvm-lint check contracts/commitment_gate.py` passes in clean GitHub Actions
+- [x] Direct Mode passes: `40 passed, 1 skipped`
+- [x] GitHub Actions is green on run `36280036759`
+- [x] effective network is stable `studionet`, chain 61999
+
+## Live Studionet lifecycle
+
+- [x] TermLock finalized deployment recorded
+- [x] two-party session created
+- [x] conflicting REQUIRED round demonstrated non-lockability
+- [x] premature lock rejection recorded
+- [x] revision invalidated the stale assessment
+- [x] revised current round reached semantic convergence
+- [x] Party A approved the exact final assessment
+- [x] Party B approved the exact final assessment
+- [x] one approval remained non-lockable; two approvals became lockable
+- [x] approved converged round locked with a nonzero 64-hex lock hash
+- [x] final TermLock state is immutable
+
+## CommitmentGate consumer proof
+
+- [x] corrected CommitmentGate finalized deployment recorded
+- [x] valid pinned gate call succeeded
+- [x] successful action became consumed
+- [x] wrong-lock-hash call was rejected without consuming the fresh action
+- [x] replayed action hash was rejected
+
+## Final submission state
+
+- [x] `DEPLOYMENT.md` contains real lifecycle proof and no `PENDING` fields
+- [x] no `FIXTURE_COMMIT_PLACEHOLDER`, `UNVERIFIED`, or `NOT RUN` markers remain
+- [x] final-gate conditions for `python scripts/preflight.py --final` are satisfied
+- [x] current remote source was inspected after the final lifecycle/CI push
+- [x] canonical deployment source remains unchanged from commit `6a561af6b9f6cf2c7b5f2f6403f1f9175ed00af1`
