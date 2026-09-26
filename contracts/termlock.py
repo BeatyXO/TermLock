@@ -122,6 +122,18 @@ def clean(value: str) -> str:
     return " ".join(str(value).strip().split())
 
 
+def cli_unwrap(value: str) -> str:
+    text = str(value)
+    for prefix in ("str:", "int:", "u256:"):
+        if text.startswith(prefix):
+            return text[len(prefix):]
+    return text
+
+
+def session_number(value: u256) -> int:
+    return int(cli_unwrap(value))
+
+
 def hash_text(value: str) -> str:
     return Keccak256(str(value).encode("utf-8")).hexdigest()
 
@@ -346,7 +358,7 @@ def is_lockable_assessment(assessment: dict) -> bool:
 def assessment_digest(session_id: int, schema_hash: str, a_hash: str, b_hash: str, assessment: dict) -> str:
     return hash_text(canonical_json({
         "protocol": "TERMLOCK_ASSESSMENT_V1",
-        "session_id": int(session_id),
+        "session_id": session_number(session_id),
         "schema_hash": schema_hash,
         "party_a_terms_hash": a_hash,
         "party_b_terms_hash": b_hash,
@@ -357,7 +369,7 @@ def assessment_digest(session_id: int, schema_hash: str, a_hash: str, b_hash: st
 def lock_digest(session_id: int, schema_hash: str, a_hash: str, b_hash: str, assessment_hash: str) -> str:
     return hash_text(canonical_json({
         "protocol": "TERMLOCK_LOCK_V1",
-        "session_id": int(session_id),
+        "session_id": session_number(session_id),
         "schema_hash": schema_hash,
         "party_a_terms_hash": a_hash,
         "party_b_terms_hash": b_hash,
@@ -373,9 +385,10 @@ class TermLock(gl.Contract):
         self.session_count = u256(0)
 
     def _must_session(self, session_id: u256) -> Session:
-        if int(session_id) <= 0 or int(session_id) > int(self.session_count):
+        sid = session_number(session_id)
+        if sid <= 0 or sid > int(self.session_count):
             raise gl.vm.UserError("unknown session")
-        return self.sessions[session_id]
+        return self.sessions[u256(sid)]
 
     def _dimension_dicts(self, s: Session) -> list[dict]:
         return [{"name": d.name, "mode": int(d.mode), "criteria": d.criteria} for d in s.dimensions]
@@ -435,13 +448,13 @@ class TermLock(gl.Contract):
         if a_str == ZERO_ADDRESS or b_str == ZERO_ADDRESS:
             raise gl.vm.UserError("party address cannot be zero")
 
-        title_c = clean(title)
+        title_c = clean(cli_unwrap(title))
         if len(title_c) == 0:
             raise gl.vm.UserError("title required")
         if len(title_c) > MAX_TITLE:
             raise gl.vm.UserError("title length out of range")
 
-        raw_schema = str(dimensions_json)
+        raw_schema = cli_unwrap(dimensions_json)
         if len(raw_schema) == 0 or len(raw_schema) > MAX_SCHEMA_JSON:
             raise gl.vm.UserError("dimensions_json length out of range")
         try:
@@ -506,7 +519,7 @@ class TermLock(gl.Contract):
         if int(s.status) in (STATUS_LOCKED, STATUS_CANCELLED):
             raise gl.vm.UserError("session is immutable")
 
-        body = str(terms).strip()
+        body = cli_unwrap(terms).strip()
         if len(body) == 0 or len(body) > MAX_TERMS:
             raise gl.vm.UserError("terms length out of range")
         new_hash = hash_text(body)
@@ -531,7 +544,7 @@ class TermLock(gl.Contract):
 
         self._clear_assessment_and_approvals(s)
         s.status = u8(STATUS_READY if s.a_terms_hash != ZERO_HASH and s.b_terms_hash != ZERO_HASH else STATUS_OPEN)
-        self.sessions[session_id] = s
+        self.sessions[u256(session_number(session_id))] = s
         TermsSubmitted(session_id, gl.message.sender_address, rev, terms_hash=new_hash).emit()
         return new_hash
 
@@ -548,7 +561,7 @@ class TermLock(gl.Contract):
             raise gl.vm.UserError("consensus returned malformed assessment")
 
         assessment_hash = assessment_digest(
-            int(session_id), s.schema_hash, s.a_terms_hash, s.b_terms_hash, assessment
+            session_number(session_id), s.schema_hash, s.a_terms_hash, s.b_terms_hash, assessment
         )
         s.assessed_a_hash = s.a_terms_hash
         s.assessed_b_hash = s.b_terms_hash
@@ -557,7 +570,7 @@ class TermLock(gl.Contract):
         s.assessment_round = u32(int(s.assessment_round) + 1)
         s.a_approved_assessment = ZERO_HASH
         s.b_approved_assessment = ZERO_HASH
-        self.sessions[session_id] = s
+        self.sessions[u256(session_number(session_id))] = s
         RoundAssessed(session_id, s.assessment_round, assessment_hash=assessment_hash, lockable=is_lockable_assessment(assessment)).emit()
         return assessment_hash
 
@@ -588,7 +601,7 @@ class TermLock(gl.Contract):
         else:
             raise gl.vm.UserError("only a declared party may approve")
 
-        self.sessions[session_id] = s
+        self.sessions[u256(session_number(session_id))] = s
         AssessmentApproved(session_id, gl.message.sender_address, assessment_hash=expected).emit()
         return True
 
@@ -607,11 +620,11 @@ class TermLock(gl.Contract):
             raise gl.vm.UserError("both parties must approve current assessment")
 
         lock_hash = lock_digest(
-            int(session_id), s.schema_hash, s.a_terms_hash, s.b_terms_hash, s.assessment_hash
+            session_number(session_id), s.schema_hash, s.a_terms_hash, s.b_terms_hash, s.assessment_hash
         )
         s.lock_hash = lock_hash
         s.status = u8(STATUS_LOCKED)
-        self.sessions[session_id] = s
+        self.sessions[u256(session_number(session_id))] = s
         AgreementLocked(session_id, lock_hash, schema_hash=s.schema_hash, assessment_hash=s.assessment_hash).emit()
         return lock_hash
 
@@ -634,7 +647,7 @@ class TermLock(gl.Contract):
             raise gl.vm.UserError("not authorized to cancel")
 
         s.status = u8(STATUS_CANCELLED)
-        self.sessions[session_id] = s
+        self.sessions[u256(session_number(session_id))] = s
         SessionCancelled(session_id, gl.message.sender_address).emit()
         return True
 
