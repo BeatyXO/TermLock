@@ -516,7 +516,9 @@ class TermLock(gl.Contract):
             lock_hash=ZERO_HASH,
         )
         self.session_count = sid
-        SessionCreated(sid, gl.message.sender_address, party_a, party_b, title=title_c, schema_hash=schema_hash).emit()
+        # Stable GenVM currently rejects blob payloads for this event; the
+        # indexed session/party fields remain sufficient for lifecycle proof.
+        SessionCreated(sid, gl.message.sender_address, party_a, party_b).emit()
         return sid
 
     @gl.public.write
