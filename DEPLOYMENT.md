@@ -29,12 +29,29 @@ Explorer: `https://explorer-studio.genlayer.com`
 - lock tx: `0x892a05348c44e3fe94143de4ce1b131d526895f3ce836d5129b0c2c73d892001`
 - final state: `LOCKED`; post-lock mutation/cancellation is blocked by the contract state machine
 
+The finalized assessment's required-dimension classifications are:
+
+| Required dimension | Final status |
+| --- | --- |
+| price | `MATCH` |
+| deliverable | `MATCH` |
+| deadline | `MATCH` |
+| remediation | `MATCH` |
+
+Read-only verification on 2026-10-03 used `genlayer network info` and confirmed
+alias `studionet`, RPC `https://studio.genlayer.com/api`, and chain ID `61999`.
+`get_session(1)` returned `LOCKED` with both approval flags true and the hashes
+listed below. `get_assessment(1)` returned `current: true`, `lockable: true`,
+and the four `MATCH` results above. `current_lock_hash(1)` returned the final
+lock hash below, and `is_locked(1, <final lock hash>)` returned `true`.
+
 ## Consumer proof
 
 - successful pinned consume tx: `0x7b19b7d856509d192df55902265a09aca3271a069def4f9f755559edce2098c9`
 - `is_consumed(aaaaaaaa...aaaa)`: `true`
 - wrong-lock rejection tx: `0xa457818f06cd860b9e55ac18172159748da3dae0e975a93449c35e55c9ca06e3`; fresh action remained unconsumed (`is_consumed(bbbb...bbbb) == false`)
-- replay rejection: reusing the consumed `aaaaaaaa...aaaa` action is rejected by the `action already consumed` guard; the consumed state remains `true`
+- replay rejection: reusing the consumed `aaaaaaaa...aaaa` action returned the contract error `action already consumed`; `is_consumed(aaaaaaaa...aaaa)` remained `true`. The replay transaction hash was not retained in the original live-run record, so no hash is claimed here.
+- read-only verification on 2026-10-03 confirmed `is_consumed(aaaaaaaa...aaaa) == true` on the deployed CommitmentGate.
 
 ## Final hashes
 
@@ -52,7 +69,7 @@ Explorer: `https://explorer-studio.genlayer.com`
 - `genvm-lint check contracts/commitment_gate.py`: PASS in clean GitHub Actions
 - Direct Mode pytest: `40 passed, 1 skipped`
 - live stable Studionet lifecycle: PASS for TermLock session 1 and corrected CommitmentGate deployment
-- GitHub Actions: **GREEN** — run `36280036759` for commit `b02918fcc7c0f98ca6cb938c445ce6b1bc71e02a`
+- GitHub Actions: **GREEN** — run `37145595125` for final commit `4126ea2f69d7b6f58dd7704a0027781f13334ab4`
 - final preflight conditions: PASS — no deployment placeholders or unverified-proof markers remain
 
 All values above are actual observed evidence from stable Studionet; no fixture or deployment placeholder remains.
