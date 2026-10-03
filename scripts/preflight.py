@@ -102,7 +102,18 @@ if "61999" not in network_text:
     errors.append("stable Studionet chain ID reference missing")
 
 if FINAL:
-    if "FIXTURE_COMMIT_PLACEHOLDER" in network_text:
+    # This marker is intentionally named in verification guidance and in the
+    # pinning helper. Check the published fixture references themselves so the
+    # checklist can state what the final gate rejects without tripping it.
+    fixture_reference_files = [
+        ROOT / "tests/test_live_studionet.py",
+        ROOT / "fixtures/README.md",
+    ]
+    if any(
+        "FIXTURE_COMMIT_PLACEHOLDER" in p.read_text(encoding="utf-8")
+        for p in fixture_reference_files
+        if p.exists()
+    ):
         errors.append("fixture commit placeholder remains")
     dep = (ROOT / "DEPLOYMENT.md").read_text(encoding="utf-8")
     if "PENDING" in dep:

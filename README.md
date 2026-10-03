@@ -134,20 +134,11 @@ python scripts/preflight.py --final
 
 It must not pass while immutable fixture markers or pending deployment proof remain.
 
-## Live proof expected before submission
+## Completed live proof
 
-On stable Studionet / chain 61999, the final evidence should show:
-
-1. finalized TermLock deployment;
-2. a session created with immutable schema hash;
-3. a deliberately conflicting required term that cannot lock;
-4. a real revision that invalidates the old assessment;
-5. a semantically converged current pair;
-6. both parties approving the exact assessment hash;
-7. immutable lock creation;
-8. finalized CommitmentGate deployment;
-9. a correct pinned consume succeeding;
-10. wrong-lock-hash consume rejected;
-11. replayed action hash rejected.
-
-No address, transaction hash, test count, or live result should be documented unless it was actually produced.
+The stable Studionet lifecycle and CommitmentGate consumer proof have been
+executed and finalized on chain 61999. The real addresses, transaction hashes,
+session state, and hashes are recorded in [DEPLOYMENT.md](DEPLOYMENT.md). The
+deployed contract source is pinned there to its exact Git commit. Do not replace
+those results with estimates or treat the live-proof specification as a claim
+about a different deployment.
